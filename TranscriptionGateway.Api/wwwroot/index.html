@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Transcription Gateway</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 16px;
+            background: #f7f7f9;
+        }
+        h1 { margin-bottom: 8px; }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.05);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, button, textarea {
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 6px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        button {
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        pre {
+            background: #111;
+            color: #eee;
+            padding: 12px;
+            border-radius: 8px;
+            overflow: auto;
+            min-height: 120px;
+        }
+        .full {
+            grid-column: 1 / -1;
+        }
+        .row {
+            display: flex;
+            gap: 8px;
+        }
+        .row > button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transcription Gateway</h1>
+    <p>Simple test UI for register, login, upload, and viewing saved jobs.</p>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Register</h2>
+            <label>Email</label>
+            <input id="registerEmail" type="email" value="test@example.com" />
+            <label>Password</label>
+            <input id="registerPassword" type="password" value="Test123!" />
+            <button onclick="registerUser()">Register</button>
+        </div>
+
+        <div class="card">
+            <h2>Login</h2>
+            <label>Email</label>
+            <input id="loginEmail" type="email" value="test@example.com" />
+            <label>Password</label>
+            <input id="loginPassword" type="password" value="Test123!" />
+            <div class="row">
+                <button onclick="loginUser()">Login</button>
+                <button onclick="logoutUser()">Logout</button>
+            </div>
+        </div>
+
+        <div class="card full">
+            <h2>Submit Audio</h2>
+            <label>Audio File</label>
+            <input id="audioFile" type="file" />
+            <button onclick="submitAudio()">Upload + Submit</button>
+        </div>
+
+        <div class="card full">
+            <h2>My Jobs</h2>
+            <button onclick="loadJobs()">Refresh Jobs</button>
+            <pre id="jobsOutput">[]</pre>
+        </div>
+
+        <div class="card full">
+            <h2>Status / Response</h2>
+            <pre id="output">Ready.</pre>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById("output");
+        const jobsOutput = document.getElementById("jobsOutput");
+
+        function show(data) {
+            if (typeof data === "string") {
+                output.textContent = data;
+            } else {
+                output.textContent = JSON.stringify(data, null, 2);
+            }
+        }
+
+        async function registerUser() {
+            const email = document.getElementById("registerEmail").value;
+            const password = document.getElementById("registerPassword").value;
+
+            const res = await fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const text = await res.text();
+            show({
+                action: "register",
+                ok: res.ok,
+                status: res.status,
+                body: text
+            });
+        }
+
+        async function loginUser() {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            const res = await fetch("/login?useCookies=true", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ email, password })
+            });
+
+            const text = await res.text();
+            show({
+                action: "login",
+                ok: res.ok,
+                status: res.status,
+                body: text || "Logged in"
+            });
+        }
+
+        async function logoutUser() {
+            const res = await fetch("/logout", {
+                method: "POST",
+                credentials: "include"
+            });
+
+            const text = await res.text();
+            show({
+                action: "logout",
+                ok: res.ok,
+                status: res.status,
+                body: text || "Logged out"
+            });
+        }
+
+        async function submitAudio() {
+            const fileInput = document.getElementById("audioFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                show("Please choose an audio file first.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("/api/transcriptions/submit", {
+                method: "POST",
+                credentials: "include",
+                body: formData
+            });
+
+            const text = await res.text();
+            let parsed;
+            try {
+                parsed = JSON.parse(text);
+            } catch {
+                parsed = text;
+            }
+
+            show({
+                action: "submit",
+                ok: res.ok,
+                status: res.status,
+                body: parsed
+            });
+        }
+
+        async function loadJobs() {
+            const res = await fetch("/api/transcriptions/mine", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const text = await res.text();
+            let parsed;
+            try {
+                parsed = JSON.parse(text);
+            } catch {
+                parsed = text;
+            }
+
+            jobsOutput.textContent = JSON.stringify(parsed, null, 2);
+            show({
+                action: "loadJobs",
+                ok: res.ok,
+                status: res.status
+            });
+        }
+    </script>
+</body>
+</html>

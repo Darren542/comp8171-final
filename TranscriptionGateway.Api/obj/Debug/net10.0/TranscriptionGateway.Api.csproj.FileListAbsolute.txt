@@ -162,3 +162,4 @@ C:\BCIT\BScACS-Term3\COMP-8171\final\part1\TranscriptionGateway\TranscriptionGat
 C:\BCIT\BScACS-Term3\COMP-8171\final\part1\TranscriptionGateway\TranscriptionGateway.Api\bin\Debug\net10.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\BCIT\BScACS-Term3\COMP-8171\final\part1\TranscriptionGateway\TranscriptionGateway.Api\bin\Debug\net10.0\TranscriptionGateway.Api.staticwebassets.runtime.json
 C:\BCIT\BScACS-Term3\COMP-8171\final\part1\TranscriptionGateway\TranscriptionGateway.Api\obj\Debug\net10.0\compressed\3th7hzz38h-{0}-n2tr8pedhk-n2tr8pedhk.gz
+C:\BCIT\BScACS-Term3\COMP-8171\final\part1\TranscriptionGateway\TranscriptionGateway.Api\obj\Debug\net10.0\TranscriptionGateway.Api.sourcelink.json

@@ -1,0 +1,63 @@
+# --- Visual Studio / .NET ---
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+mono_crash.*
+
+# Build outputs
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+build/
+publish/
+artifacts/
+
+# IDE folders
+.vs/
+.vscode/
+
+# Logs
+*.log
+[Ll]og/
+[Ll]ogs/
+
+# Test output
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+TestResults/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+*.nuget.props
+*.nuget.targets
+
+# Local database / runtime files
+*.db
+*.db-shm
+*.db-wal
+
+# App/runtime local files
+cookies.txt
+app.log
+nohup.out
+
+# Environment / secrets
+.env
+.env.*
+appsettings.Development.json
+appsettings.*.local.json
+
+# OS junk
+.DS_Store
+Thumbs.db

@@ -19,6 +19,8 @@ x86/
 build/
 publish/
 artifacts/
+bin/
+obj/
 
 # IDE folders
 .vs/
